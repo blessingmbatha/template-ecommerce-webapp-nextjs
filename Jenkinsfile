@@ -26,7 +26,7 @@ pipeline {
                         }  
                     }
                 }
-                stage("quality gate"){
+                stage("Sonar quality gate"){
                     steps {
                         script {
                              waitForQualityGate abortPipeline: false, credentialsId: 'sonar-token' 
@@ -38,7 +38,7 @@ pipeline {
                         sh "npm install"
                     }
                 }
-                stage('OWASP Dependency Check'){
+                stage('Dependency Check'){
                     steps {
                         dependencyCheck additionalArguments: '--scan ./ --disableYarnAudit --disableNodeAudit', odcInstallation: 'OWASP DC'
                         dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
@@ -47,6 +47,27 @@ pipeline {
                 stage('TRIVY FS SCAN') {
                     steps {
                         sh "trivy fs . > trivyfs.txt"
+                    }
+                }
+                stage("Docker Build & Push Image"){
+                    steps{
+                        script{
+                              withDockerRegistry(credentialsId: 'docker', toolName: 'docker'){   
+                                  sh "docker build -t Ecommerce-Project:latest ."
+                                  sh "docker tag Ecommerce-Project:latest nkosenhlembatha/Ecommerce-Project:latest "
+                                  sh "docker push nkosenhlembatha/Ecommerce-Project:latest "
+                              }
+                        }
+                    }
+                }
+                stage("Scan Docker Image"){
+                    steps{
+                        sh "trivy image nkosenhlembatha/Ecommerce-Project:latest > trivyimage.txt" 
+                    }
+                }
+                stage('Deploy to container'){
+                    steps{
+                        sh 'docker run -d --name Ecommcerce-Project -p 8081:80 nkosenhlembatha/Ecommerce-Project:latest'
                     }
                 }
            }
