@@ -8,5 +8,5 @@ COPY . .
 FROM nginx:stable-alpine
 WORKDIR /usr/share/nginx/html
 RUN rm -rf ./*
-EXPOSE 80
+EXPOSE 3000
 ENTRYPOINT ["nginx", "-g", "daemon off;"]
