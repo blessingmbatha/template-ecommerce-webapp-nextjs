@@ -53,21 +53,21 @@ pipeline {
                     steps{
                         script{
                               withDockerRegistry(credentialsId: 'docker', toolName: 'docker'){   
-                                  sh "docker build -t Ecommerce-Project:latest ."
-                                  sh "docker tag Ecommerce-Project:latest nkosenhlembatha/Ecommerce-Project:latest "
-                                  sh "docker push nkosenhlembatha/Ecommerce-Project:latest "
+                                  sh "docker build -t ecommerce:latest ."
+                                  sh "docker tag ecommerce nkosenhlembatha/ecommerce:latest"
+                                  sh "docker push nkosenhlembatha/ecommerce:latest"
                               }
                         }
                     }
                 }
                 stage("Scan Docker Image"){
                     steps{
-                        sh "trivy image nkosenhlembatha/Ecommerce-Project:latest > trivyimage.txt" 
+                        sh "trivy image nkosenhlembatha/ecommerce:latest > trivyimage.txt" 
                     }
                 }
                 stage('Deploy to container'){
                     steps{
-                        sh 'docker run -d --name Ecommcerce-Project -p 8081:80 nkosenhlembatha/Ecommerce-Project:latest'
+                        sh "docker run -d --name ecommerce -p 8081:80 nkosenhlembatha/ecommerce:latest"
                     }
                 }
            }
