@@ -20,9 +20,10 @@ pipeline {
                 }
                 stage('SonarQube Analysis'){
                     steps {
-                        withSonarQubeEnv('sonar-server')
+                        withSonarQubeEnv('sonar-server'){
                                  sh '''$SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=Ecommerce-Project \
                                       -Dsonar.projectKey=Ecommerce-Project '''
+                        }  
                     }
                 }
                 stage("quality gate"){
