@@ -67,7 +67,7 @@ pipeline {
                 }
                 stage('Deploy to container'){
                     steps{
-                        sh "docker run -d --name ecommerce -p 8081:80 nkosenhlembatha/ecommerce:latest"
+                        sh "docker run -d --name ecommerce2 -p 8081:80 nkosenhlembatha/ecommerce:latest"
                     }
                 }
            }
